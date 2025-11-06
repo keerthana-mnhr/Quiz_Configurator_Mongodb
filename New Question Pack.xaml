@@ -1,0 +1,63 @@
+﻿<Window x:Class="Quiz_Configurator.New_Question_Pack"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Quiz_Configurator"
+        mc:Ignorable="d"
+       WindowStyle="None"
+        AllowsTransparency="True"
+        Height="250" Width="150">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <!--<RowDefinition Height="60"/>-->
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Background="LightBlue"/>
+        <TextBlock Text="New Question Pack" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="X"
+                    Height="20" 
+                    Background="Maroon"
+                    Margin="1,1,2,1"
+                    Click="Button_Click"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="5,10,2,2">
+            <TextBlock Text="Pack Name:" FontWeight="ExtraBlack" Margin="10,0,6,0"/>
+            <TextBox Text="/PackName/"
+                x:Name="PackName"  
+                     Height="20" Width="120"
+                     Margin="0,10,2,170"
+                     BorderBrush="Black"
+             />
+            <TextBlock Text="Difficulty:" FontWeight="ExtraBlack" Margin="10,50,6,10"/>
+            <ComboBox Height="20" Width="120"
+                      Margin="0,20,2,80" SelectionChanged="ComboBox_SelectionChanged">
+                <ComboBoxItem Content="Easy"/>
+                <ComboBoxItem Content="Medium"/>
+                <ComboBoxItem Content="Difficult"/>
+            </ComboBox>
+
+            <TextBlock Text="Time Limit:" FontWeight="ExtraBlack" Margin="10,95,6,100"/>
+            <TextBox Margin="10,113,2,85" Width="120" Height="20"/>
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button x:Name="CreateButton" Background="LightBlue" HorizontalAlignment="Center" 
+         Content="Create" FontSize="10" Height="16" Width="35"
+         Margin="5,200,90,10"
+         BorderBrush="Black"/>
+            <Button x:Name="CancelButton" Background="LightBlue" HorizontalAlignment="Center"  
+         Content="Cancel" FontSize="10" Height="16" Width="35"
+         Margin="55,200,90,10"
+         BorderBrush="Black"
+        />
+        </StackPanel>
+
+
+
+    </Grid>
+</Window>
