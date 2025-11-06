@@ -7,9 +7,10 @@
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="Quiz Configurator" Height="450" Width="800">
+
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
+            <MenuItem Header="_File">
                 <MenuItem Header="New Question Pack">
                     <MenuItem.Icon>
                         <fa:FontAwesome Icon="Plus" />
@@ -43,9 +44,9 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-           
+
             <MenuItem Header="_Edit">
-               
+
                 <MenuItem Header="Add Question" InputGestureText="Insert">
                     <MenuItem.Icon>
                         <fa:FontAwesome Icon="Plus"/>
@@ -65,8 +66,8 @@
                 </MenuItem>
 
             </MenuItem>
-            <MenuItem Header="View">
-                
+            <MenuItem Header="_View">
+
                 <MenuItem Header="Play" InputGestureText="Ctrl+P">
                     <MenuItem.Icon>
                         <fa:FontAwesome Icon="Play" />
@@ -84,7 +85,60 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
+
         </Menu>
-       
+        <Grid DockPanel.Dock="Top">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="215"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Column="0" LastChildFill="False">
+                <Menu DockPanel.Dock="Left"
+                      Background="White">
+                <MenuItem Header="Default Question Pack"  FontWeight="DemiBold"/>
+                </Menu>
+            </DockPanel>
+          
+
+            <StackPanel Grid.Column="1" Width="Auto" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,0,0,0">
+                <Button Width="24" Height="20" Margin="0,0,0,0">
+                    <fa:FontAwesome Icon="ListUl"/>
+
+                </Button>
+                <Button Width="24" Height="20" Margin="5,0,0,0">
+                    <fa:FontAwesome Icon="PlusSquareOutline"/>
+
+                </Button>
+                <Button Width="24" Height="20" Margin="5,0,0,0">
+                    <fa:FontAwesome Icon="MinusSquareOutline"/>
+
+                </Button>
+
+            </StackPanel>
+
+        </Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" 
+                    BorderBrush="Gray"
+                    BorderThickness="1" 
+                    />
+
+
+            <GridSplitter Grid.Column="1"/>
+
+            <Border Grid.Column="2"/>
+
+        </Grid>
+
     </DockPanel>
+
+
 </Window>
