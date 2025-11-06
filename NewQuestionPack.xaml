@@ -7,12 +7,12 @@
         mc:Ignorable="d"
        WindowStyle="None"
         AllowsTransparency="True"
-        Height="250" Width="150">
+        Height="250" Width="200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
-            <!--<RowDefinition Height="60"/>-->
+            
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Background="LightBlue"/>
@@ -29,12 +29,12 @@
             <TextBlock Text="Pack Name:" FontWeight="ExtraBlack" Margin="10,0,6,0"/>
             <TextBox Text="/PackName/"
                 x:Name="PackName"  
-                     Height="20" Width="120"
+                     Height="20" Width="170"
                      Margin="0,10,2,170"
                      BorderBrush="Black"
              />
             <TextBlock Text="Difficulty:" FontWeight="ExtraBlack" Margin="10,50,6,10"/>
-            <ComboBox Height="20" Width="120"
+            <ComboBox Height="20" Width="170"
                       Margin="0,20,2,80" SelectionChanged="ComboBox_SelectionChanged">
                 <ComboBoxItem Content="Easy"/>
                 <ComboBoxItem Content="Medium"/>
@@ -42,22 +42,30 @@
             </ComboBox>
 
             <TextBlock Text="Time Limit:" FontWeight="ExtraBlack" Margin="10,95,6,100"/>
-            <TextBox Margin="10,113,2,85" Width="120" Height="20"/>
-        </Grid>
+            <TextBlock Text="{Binding ElementName=TimeLimitSlider, Path=Value, StringFormat=\{0:F0\}\ Seconds}" 
+                       HorizontalAlignment="Right"
+                       Margin="50,95,5,100"/>
+            
+            <Slider x:Name="TimeLimitSlider"  Margin="0,115,1,1" Minimum="0" 
+                    Maximum="120" Value="50" 
+                    TickFrequency="5" TickPlacement="BottomRight"
+                    Width="170"/>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <Button x:Name="CreateButton" Background="LightBlue" HorizontalAlignment="Center" 
-         Content="Create" FontSize="10" Height="16" Width="35"
-         Margin="5,200,90,10"
-         BorderBrush="Black"/>
-            <Button x:Name="CancelButton" Background="LightBlue" HorizontalAlignment="Center"  
-         Content="Cancel" FontSize="10" Height="16" Width="35"
-         Margin="55,200,90,10"
-         BorderBrush="Black"
-        />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button  Background="LightBlue"
+                     Content="Create" FontSize="12" Height="20" Width="40"
+                     Margin="40,130,10,0"
+                     BorderBrush="Black"
+                    />
+            <Button Background="LightBlue" HorizontalAlignment="Right"  
+                    Content="Cancel" FontSize="12" Height="20" Width="40"
+                    Margin="20,130,10,0"
+                    BorderBrush="Black"
+            />
         </StackPanel>
 
-
+        </Grid>
 
     </Grid>
 </Window>

@@ -129,6 +129,7 @@
             <Border Grid.Column="0" 
                     BorderBrush="Gray"
                     BorderThickness="1" 
+                    Margin="2,1,1,2"
                     />
 
 
