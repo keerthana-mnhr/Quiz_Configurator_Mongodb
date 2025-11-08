@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStyle="None"
         AllowsTransparency="True"
-        Title="Import_Questions" Height="450" Width="600">
+        Title="Import_Questions" Height="250" Width="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -16,7 +16,7 @@
 
         <Grid Grid.Row="0" Background="LightBlue" >
             <TextBlock Text="Import Questions From Open Trivia Database" 
-                       FontSize="16" Margin="3,2,0,0"/>
+                       FontSize="12" Margin="3,6,0,0"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="X"
                 Height="20" Width="20"
@@ -27,51 +27,52 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="47*"/>
-                <ColumnDefinition Width="73*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="Category" FontSize="20" FontWeight="Heavy"
-                       Margin="20,20,20,370" Grid.ColumnSpan="2"/>
-            <ComboBox x:Name="Question_Category"    Height="40" Margin="20,55,20,325" Grid.ColumnSpan="2"/>
 
-            <TextBlock Text="Difficulty" FontSize="20" FontWeight="Heavy"
-               Margin="20,120,20,260" Grid.ColumnSpan="2"/>
-            <ComboBox x:Name="Question_Difficulty"    Height="40" Margin="20,165,20,215" Grid.ColumnSpan="2"
+            <TextBlock Text="Category" FontSize="10" FontWeight="Heavy"
+                       Margin="20,10,20,190"/>
+            <ComboBox x:Name="Question_Category" 
+                      Height="25" Width="260" Margin="20,37,20,159"/>
+
+            <TextBlock Text="Difficulty" FontSize="10" FontWeight="Heavy"
+                        Margin="20,70,20,130"/>
+            <ComboBox x:Name="Question_Difficulty"    
+                      Height="25" Margin="20,90,20,106" Width="260"
                      />
 
 
 
 
             <TextBlock Text="Number Of Questions:"
-                   FontWeight="ExtraBlack" FontSize="20"
-                   Margin="20,230,20,160" Grid.ColumnSpan="2" />
+                   FontWeight="ExtraBlack" FontSize="12"
+                   Margin="20,130,20,65" Grid.ColumnSpan="2" />
 
             <TextBlock Text="{Binding ElementName=NumberOfQuestionSlider, Path=Value, StringFormat=\{0:F0\}}" 
                        HorizontalAlignment="Right"
-                       Margin="3,230,20,160" Width="20"
-                       FontSize="25" Grid.Column="1"/>
+                       Margin="3,130,20,65" Width="20"
+                       FontSize="15" Grid.Column="1"/>
 
-            <Slider x:Name="NumberOfQuestionSlider"  Margin="20,265,20,126" Minimum="0" 
+            <Slider x:Name="NumberOfQuestionSlider"  Margin="20,153,20,49" Minimum="0" 
                     Maximum="20" Value="1" 
                     TickFrequency="1" TickPlacement="BottomRight" Grid.ColumnSpan="2"/>
 
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom"  Width="200">
+
                 <Button  Background="LightBlue"
                      Content="Import" Click="Button_Click"
-                         FontSize="12" Height="30" Width="95"
-                     Margin="100,300,10,2"
-                     BorderBrush="Black"
-                    />
-            </StackPanel>
-            <Button Background="LightBlue"  
-                    Content="Cancel" Click="Button_Click_1"
-                    FontSize="12"
-                     Height="30" Width="95"
+                         FontSize="12" Height="25" Width="70"
+                     BorderBrush="Black"  
+                         Margin="0,181,30,10"
+                />
+
+                <Button Background="LightBlue"
+                        Content="Cancel" Click="Button_Click_1"
+                    FontSize="12" Width="70" Foreground="Black"
+                         Height="25"
                     BorderBrush="Black"
-            Margin="85,305,20,2" Grid.Column="1"
-            />
+                    Margin="5,181,30,10"
+                 />
+            </StackPanel>
         </Grid>
 
     </Grid>
