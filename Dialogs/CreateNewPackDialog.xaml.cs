@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Quiz_Configurator.Models;
 
 namespace Quiz_Configurator.Dialogs
 {
@@ -19,6 +20,10 @@ namespace Quiz_Configurator.Dialogs
     /// </summary>
     public partial class New_Question_Pack : Window
     {
+        public string PackName => PackNameTextBox.Text;
+        public Difficulty SelectedDifficulty { get; private set; } = Difficulty.Medium;
+        public int TimeLimitInSeconds => (int)TimeLimitSlider.Value;
+
         public New_Question_Pack()
         {
             InitializeComponent();
@@ -26,12 +31,41 @@ namespace Quiz_Configurator.Dialogs
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            DialogResult = false;
+            Close();
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (sender is ComboBox comboBox && comboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                SelectedDifficulty = selectedItem.Content.ToString() switch
+                {
+                    "Easy" => Difficulty.Easy,
+                    "Medium" => Difficulty.Medium,
+                    "Difficult" => Difficulty.Hard,
+                    _ => Difficulty.Medium
+                };
+            }
+        }
 
+        private void Create_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(PackName))
+            {
+                MessageBox.Show("Pack name cannot be empty.", "Validation Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            DialogResult = true;
+            Close();
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }

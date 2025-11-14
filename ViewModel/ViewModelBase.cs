@@ -3,11 +3,19 @@ using System.Runtime.CompilerServices;
 
 namespace Quiz_Configurator.ViewModel
 {
-    internal class ViewModelBase: INotifyPropertyChanged
+    public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (Equals(field, value)) return false;
+            field = value;
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
+
+        protected virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

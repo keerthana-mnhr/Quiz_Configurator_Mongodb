@@ -7,62 +7,65 @@
         mc:Ignorable="d"
         WindowStyle="None"
         AllowsTransparency="True"
-        Title="PackOptionDialog" Height="230" Width="200">
-    <Grid>
-        
+        Title="PackOptionDialog" Height="280" Width="220"
+        WindowStartupLocation="CenterOwner">
+    <Border BorderBrush="Black" BorderThickness="2" Background="White">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition Height="*"/>
-
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Background="LightBlue"/>
-            <TextBlock Text="Pack Option" />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="X"
-                  Height="20" 
-                  Background="Maroon"
-                  Margin="1,1,2,1"
-                  Click="Button_Click"/>
-            </StackPanel>
+            
+            <Grid Grid.Row="0" Background="LightBlue">
+                <TextBlock Text="Pack Options" VerticalAlignment="Center" 
+                          Margin="8,0" FontWeight="Bold"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="✕" Width="25" Height="25" 
+                           Background="Maroon" Foreground="White"
+                           BorderThickness="0" Click="Close_Click"
+                           FontWeight="Bold"/>
+                </StackPanel>
+            </Grid>
 
-            <Grid Grid.Row="1" Margin="5,10,2,2">
-                <TextBlock Text="Pack Name:" 
-                           FontWeight="ExtraBlack" 
-                           Margin="10,0,6,0"/>
-                       <TextBox Text="/PackName/"
-                         x:Name="PackName"  
-                         Height="20" Width="170"
-                         Margin="0,20,2,158"
-                         BorderBrush="Black"
-                     />
-                <TextBlock Text="Difficulty:"
-                           FontWeight="ExtraBlack" 
-                           Width="170"
-                           Margin="10,50,6,125"/>
-                <ComboBox Height="20" Width="170"
-                          Margin="10,73,13,105"
-                          >
+            
+            <StackPanel Grid.Row="1" Margin="15,15,15,5">
+                
+                <TextBlock Text="Pack Name:" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBox x:Name="PackName" Height="25" 
+                        BorderBrush="Black" BorderThickness="1"
+                        Margin="0,0,0,15"/>
+
+               
+                <TextBlock Text="Difficulty:" FontWeight="Bold" Margin="0,0,0,5"/>
+                <ComboBox x:Name="DifficultyComboBox" Height="25" 
+                         BorderBrush="Black" BorderThickness="1"
+                         Margin="0,0,0,15">
                     <ComboBoxItem Content="Easy"/>
-                    <ComboBoxItem Content="Medium"/>
+                    <ComboBoxItem Content="Medium" IsSelected="True"/>
                     <ComboBoxItem Content="Difficult"/>
                 </ComboBox>
 
-                <TextBlock Text="Time Limit:"
-                           FontWeight="ExtraBlack" 
-                           Margin="16,111,0,55"/>
-                <TextBlock Text="{Binding ElementName=TimeLimitSlider, Path=Value, StringFormat=\{0:F0\}\ Seconds}" 
-                     HorizontalAlignment="Right"
-                     Margin="0,111,0,60"/>
+               
+                <TextBlock Text="Time Limit:" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBlock Text="{Binding ElementName=TimeLimitSlider, Path=Value, StringFormat='{}{0:F0} Seconds'}" 
+                          HorizontalAlignment="Right" Margin="0,0,0,5"/>
+                <Slider x:Name="TimeLimitSlider" Minimum="10" Maximum="120" Value="30" 
+                       TickFrequency="10" TickPlacement="BottomRight"
+                       Margin="0,0,0,10"/>
+            </StackPanel>
 
-                <Slider x:Name="TimeLimitSlider"  Margin="10,143,13,27" Minimum="0" 
-                  Maximum="120" Value="50" 
-                  TickFrequency="5" TickPlacement="BottomRight"
-                  Width="170"/>
-
-
-              
-          </Grid>
-
-     </Grid>
+           
+            <StackPanel Grid.Row="2" Orientation="Horizontal" 
+                       HorizontalAlignment="Right" Margin="0,0,15,10">
+                <Button Content="OK" Width="60" Height="25" 
+                       Background="LightGreen" BorderBrush="Black" BorderThickness="1"
+                       Click="OK_Click" Margin="0,0,10,0" FontWeight="Bold"/>
+                <Button Content="Cancel" Width="60" Height="25" 
+                       Background="LightGray" BorderBrush="Black" BorderThickness="1"
+                       Click="Cancel_Click" FontWeight="Bold"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

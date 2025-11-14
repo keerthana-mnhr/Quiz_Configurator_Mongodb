@@ -24,9 +24,30 @@ namespace Quiz_Configurator.Dialogs
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void OK_Click(object sender, RoutedEventArgs e)
         {
+     
+            if (string.IsNullOrWhiteSpace(PackName.Text))
+            {
+                MessageBox.Show("Pack name cannot be empty.", "Validation Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
+            DialogResult = true;
+            Close();
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }

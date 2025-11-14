@@ -7,7 +7,10 @@
         xmlns:fa="http://schemas.fontawesome.io/icons/" 
         xmlns:views="clr-namespace:Quiz_Configurator.Views"
         mc:Ignorable="d"
-        Title="Quiz Configurator" Height="450" Width="800">
+        Title="Quiz Configurator" 
+        Height="600" Width="1000"
+        MinHeight="500" MinWidth="800"
+        WindowState="Normal">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -15,67 +18,34 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <views:MenuView Grid.Row="0" />
+        <views:MenuView Grid.Row="0" DataContext="{Binding}" />
 
-        <views:PlayerView Grid.Row="1" />
-        <!--<views:ConfigurationView Grid.Row="1" />-->
+       
+        <views:ConfigurationView Grid.Row="1" DataContext="{Binding ConfigurationViewModel}">
+            <views:ConfigurationView.Style>
+                <Style TargetType="views:ConfigurationView">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding PlayerViewModel.IsPlaying}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </views:ConfigurationView.Style>
+        </views:ConfigurationView>
+
+        
+        <views:PlayerView Grid.Row="1" DataContext="{Binding PlayerViewModel}">
+            <views:PlayerView.Style>
+                <Style TargetType="views:PlayerView">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </views:PlayerView.Style>
+        </views:PlayerView>
     </Grid>
-
-    <!--<DockPanel>
-      
-        <Grid DockPanel.Dock="Top">
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="215"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <DockPanel Grid.Column="0" LastChildFill="False">
-                <Menu DockPanel.Dock="Left"
-                      Background="White">
-                <MenuItem Header="Default Question Pack"  FontWeight="DemiBold"/>
-                </Menu>
-            </DockPanel>
-          
-
-            <StackPanel Grid.Column="1" Width="Auto" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0,0,0,0">
-                <Button Width="24" Height="20" Margin="0,0,0,0">
-                    <fa:FontAwesome Icon="ListUl"/>
-
-                </Button>
-                <Button Width="24" Height="20" Margin="5,0,0,0">
-                    <fa:FontAwesome Icon="PlusSquareOutline"/>
-
-                </Button>
-                <Button Width="24" Height="20" Margin="5,0,0,0">
-                    <fa:FontAwesome Icon="MinusSquareOutline"/>
-
-                </Button>
-
-            </StackPanel>
-
-        </Grid>
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="1"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Border Grid.Column="0" 
-                    BorderBrush="Gray"
-                    BorderThickness="1" 
-                    Margin="2,1,1,2"
-                    />
-
-
-            <GridSplitter Grid.Column="1"/>
-
-            <Border Grid.Column="2"/>
-
-        </Grid>
-
-    </DockPanel>-->
-
-
 </Window>
