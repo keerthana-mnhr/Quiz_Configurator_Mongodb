@@ -18,15 +18,10 @@ namespace Quiz_Configurator.ViewModel
         public ConfigurationViewModel(MainWindowViewModel? mainWindowViewModel)
         {
             this.mainWindowViewModel = mainWindowViewModel;
-
-            // Initialize commands
-            LoadDefaultPackCommand = new DelegateCommand(LoadDefaultPack);
-
-            // Question management commands
             AddQuestionCommand = new DelegateCommand(AddQuestion, CanAddQuestion);
             AddQuestionFromMenuCommand = new DelegateCommand(AddQuestionFromMenu);
             DeleteQuestionCommand = new DelegateCommand(DeleteQuestion, CanDeleteQuestion);
-            UpdateQuestionCommand = new DelegateCommand(UpdateQuestion, CanUpdateQuestion); // Use new method
+            UpdateQuestionCommand = new DelegateCommand(UpdateQuestion, CanUpdateQuestion); 
             CancelEditCommand = new DelegateCommand(CancelEdit);
             EditPackCommand = new DelegateCommand(EditPack, CanEditPack);
             CreateNewPackCommand = new DelegateCommand(CreateNewPack);
@@ -60,7 +55,7 @@ namespace Quiz_Configurator.ViewModel
                 _newQuestionText = value;
                 RaisePropertyChanged();
                 AddQuestionCommand.RaiseCanExecuteChanged();
-                UpdateQuestionCommand.RaiseCanExecuteChanged(); // Add this line
+                UpdateQuestionCommand.RaiseCanExecuteChanged(); 
             }
         }
 
@@ -73,7 +68,7 @@ namespace Quiz_Configurator.ViewModel
                 _correctAnswer = value;
                 RaisePropertyChanged();
                 AddQuestionCommand.RaiseCanExecuteChanged();
-                UpdateQuestionCommand.RaiseCanExecuteChanged(); // Add this line
+                UpdateQuestionCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -86,7 +81,7 @@ namespace Quiz_Configurator.ViewModel
                 _firstIncorrectAnswer = value;
                 RaisePropertyChanged();
                 AddQuestionCommand.RaiseCanExecuteChanged();
-                UpdateQuestionCommand.RaiseCanExecuteChanged(); // Add this line
+                UpdateQuestionCommand.RaiseCanExecuteChanged(); 
             }
         }
 
@@ -99,7 +94,7 @@ namespace Quiz_Configurator.ViewModel
                 _secondIncorrectAnswer = value;
                 RaisePropertyChanged();
                 AddQuestionCommand.RaiseCanExecuteChanged();
-                UpdateQuestionCommand.RaiseCanExecuteChanged(); // Add this line
+                UpdateQuestionCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -112,7 +107,7 @@ namespace Quiz_Configurator.ViewModel
                 _thirdIncorrectAnswer = value;
                 RaisePropertyChanged();
                 AddQuestionCommand.RaiseCanExecuteChanged();
-                UpdateQuestionCommand.RaiseCanExecuteChanged(); // Add this line
+                UpdateQuestionCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -138,9 +133,8 @@ namespace Quiz_Configurator.ViewModel
                 _selectedQuestion = value;
                 RaisePropertyChanged();
                 DeleteQuestionCommand.RaiseCanExecuteChanged();
-                UpdateQuestionCommand.RaiseCanExecuteChanged(); // Add this line
+                UpdateQuestionCommand.RaiseCanExecuteChanged(); 
 
-                // Load the selected question into the form for editing
                 if (value != null)
                 {
                     LoadQuestionForEditing(value);
@@ -154,7 +148,7 @@ namespace Quiz_Configurator.ViewModel
 
 
 
-        #region Command Implementations
+ 
         private void AddQuestionFromMenu(object? parameter)
         {
             if (mainWindowViewModel?.ActivePack == null)
@@ -166,7 +160,6 @@ namespace Quiz_Configurator.ViewModel
 
             try
             {
-                // Create a new template question
                 var question = new Question(
                     "New Question",
                     "Correct Answer",
@@ -208,7 +201,6 @@ namespace Quiz_Configurator.ViewModel
                         return;
                     }
 
-                    // Check if pack name already exists
                     if (mainWindowViewModel?.Packs.Any(p => p.Name.Equals(packName, StringComparison.OrdinalIgnoreCase)) == true)
                     {
                         MessageBox.Show("A pack with this name already exists.", "Validation Error",
@@ -216,11 +208,9 @@ namespace Quiz_Configurator.ViewModel
                         return;
                     }
 
-                    // Create new pack
                     var newPack = new QuestionPack(packName, dialog.SelectedDifficulty, dialog.TimeLimitInSeconds);
                     var packViewModel = new QuestionPackViewModel(newPack);
 
-                    // Add to collection and save
                     if (mainWindowViewModel != null)
                     {
                         await mainWindowViewModel.AddPackAsync(packViewModel);
@@ -291,7 +281,6 @@ namespace Quiz_Configurator.ViewModel
                 {
                     var packToDelete = mainWindowViewModel.ActivePack;
 
-                    // Remove from collection and save
                     await mainWindowViewModel.RemovePackAsync(packToDelete);
 
                     MessageBox.Show($"Pack '{packToDelete.Name}' deleted successfully!", "Success",
@@ -326,14 +315,14 @@ namespace Quiz_Configurator.ViewModel
 
                 mainWindowViewModel.ActivePack.Questions.Add(question);
 
-                // Clear the form
+        
                 NewQuestionText = string.Empty;
                 CorrectAnswer = string.Empty;
                 FirstIncorrectAnswer = string.Empty;
                 SecondIncorrectAnswer = string.Empty;
                 ThirdIncorrectAnswer = string.Empty;
 
-                // Auto-save is handled by the collection change event
+              
                 MessageBox.Show("Question added successfully!", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -406,26 +395,6 @@ namespace Quiz_Configurator.ViewModel
             return SelectedQuestion != null && mainWindowViewModel?.ActivePack != null;
         }
 
-        private void LoadDefaultPack(object? parameter)
-        {
-            try
-            {
-                if (mainWindowViewModel == null) return;
-
-                // Use the MainWindowViewModel's method instead of duplicating code
-                mainWindowViewModel.LoadDefaultPack();
-
-                MessageBox.Show("Default question pack loaded successfully!", "Success",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading default pack: {ex.Message}", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        // Add these helper methods right after the SelectedQuestion property
         private void LoadQuestionForEditing(Question question)
         {
             IsEditingQuestion = true;
@@ -439,7 +408,6 @@ namespace Quiz_Configurator.ViewModel
                 ThirdIncorrectAnswer = question.IncorrectAnswers[2];
             }
 
-            // Notify that UpdateQuestionCommand can execute changed
             UpdateQuestionCommand.RaiseCanExecuteChanged();
         }
 
@@ -459,16 +427,16 @@ namespace Quiz_Configurator.ViewModel
 
             try
             {
-                // Update the existing question
+          
                 SelectedQuestion.Query = NewQuestionText;
                 SelectedQuestion.CorrectAnswer = CorrectAnswer;
                 SelectedQuestion.IncorrectAnswers = new[] { FirstIncorrectAnswer, SecondIncorrectAnswer, ThirdIncorrectAnswer };
 
-                // Clear the form and exit edit mode
+              
                 ClearForm();
                 SelectedQuestion = null;
 
-                // Auto-save is handled by property change events
+               
                 MessageBox.Show("Question updated successfully!", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -501,7 +469,7 @@ namespace Quiz_Configurator.ViewModel
                     dialog.Owner = Application.Current.MainWindow;
                 }
 
-                // Pre-populate with current values
+          
                 dialog.PackName.Text = mainWindowViewModel.ActivePack.Name;
                 SetDifficultyInDialog(dialog, mainWindowViewModel.ActivePack.Difficulty);
                 dialog.TimeLimitSlider.Value = mainWindowViewModel.ActivePack.TimeLimitInSeconds;
@@ -519,7 +487,7 @@ namespace Quiz_Configurator.ViewModel
                         return;
                     }
 
-                    // Update pack properties
+                 
                     mainWindowViewModel.ActivePack.Name = newPackName;
                     mainWindowViewModel.ActivePack.Difficulty = GetDifficultyFromDialog(dialog);
                     mainWindowViewModel.ActivePack.TimeLimitInSeconds = (int)dialog.TimeLimitSlider.Value;
@@ -582,6 +550,6 @@ namespace Quiz_Configurator.ViewModel
                    !string.IsNullOrWhiteSpace(ThirdIncorrectAnswer) &&
                    mainWindowViewModel?.ActivePack != null;
         }
-        #endregion
+      
     }
 }

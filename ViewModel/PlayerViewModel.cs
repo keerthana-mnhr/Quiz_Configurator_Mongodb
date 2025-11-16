@@ -39,7 +39,7 @@ namespace Quiz_Configurator.ViewModel
             DemoText = string.Empty;
         }
 
-        #region Properties
+      
         public QuestionPackViewModel? ActivePack => _mainWindowViewModel?.ActivePack;
 
         private bool _isPlaying;
@@ -134,17 +134,16 @@ namespace Quiz_Configurator.ViewModel
                 SetPackNameCommand.RaiseCanExecuteChanged();
             }
         }
-        #endregion
+       
 
-        #region Commands
+       
         public DelegateCommand StartQuizCommand { get; }
         public DelegateCommand AnswerQuestionCommand { get; }
         public DelegateCommand NextQuestionCommand { get; }
         public DelegateCommand EndQuizCommand { get; }
         public DelegateCommand SetPackNameCommand { get; }
-        #endregion
+      
 
-        #region Command Implementations
         private void StartQuiz(object? parameter)
         {
             if (ActivePack?.Questions?.Count == 0)
@@ -270,9 +269,7 @@ namespace Quiz_Configurator.ViewModel
                 ActivePack.Name = DemoText;
             }
         }
-        #endregion
 
-        #region Helper Methods
         private void LoadCurrentQuestion()
         {
             if (_questions != null && _currentQuestionIndex < _questions.Count)
@@ -360,7 +357,6 @@ namespace Quiz_Configurator.ViewModel
                 }
             }
         }
-        #endregion
     }
 
    

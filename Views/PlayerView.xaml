@@ -14,7 +14,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header with Question Info and Timer -->
         <Border Grid.Row="0" Background="LightBlue" BorderBrush="Black" BorderThickness="1" 
                 Margin="10" Padding="15">
             <Grid>
@@ -24,13 +23,12 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Pack Name -->
                 <TextBlock Grid.Column="0" 
                           Text="{Binding ActivePack.Name, StringFormat='Playing: {0}'}" 
                           FontSize="16" FontWeight="Bold"
                           VerticalAlignment="Center"/>
 
-                <!-- Question Counter -->
+
                 <TextBlock Grid.Column="1"
                           FontSize="14" FontWeight="Bold"
                           VerticalAlignment="Center"
@@ -43,7 +41,6 @@
                     </TextBlock.Text>
                 </TextBlock>
 
-                <!-- Timer -->
                 <Border Grid.Column="2" Background="Red" CornerRadius="5" Padding="10,5"
                         Margin="10,0,0,0">
                     <TextBlock Text="{Binding TimeRemaining}" 
@@ -53,7 +50,7 @@
             </Grid>
         </Border>
 
-        <!-- Question and Answers -->
+
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="20">
             <Grid MaxWidth="900" HorizontalAlignment="Center">
                 <Grid.RowDefinitions>
@@ -61,7 +58,6 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Question -->
                 <Border Grid.Row="0" Background="LightYellow" BorderBrush="Black" BorderThickness="2" 
                         CornerRadius="5" Padding="20" Margin="0,0,0,30">
                     <TextBlock Text="{Binding CurrentQuestion.Query}" 
@@ -69,7 +65,6 @@
                               TextWrapping="Wrap" HorizontalAlignment="Center"/>
                 </Border>
 
-                <!-- Answer Options - 2x2 Grid Layout -->
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -82,7 +77,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Answer Option 1 (Top Left) -->
+                  
                     <Button Grid.Row="0" Grid.Column="0" 
                             Padding="15" MinHeight="80"
                             Command="{Binding AnswerQuestionCommand}"
@@ -110,7 +105,7 @@
                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
 
-                    <!-- Answer Option 2 (Top Right) -->
+              
                     <Button Grid.Row="0" Grid.Column="2" 
                             Padding="15" MinHeight="80"
                             Command="{Binding AnswerQuestionCommand}"
@@ -138,7 +133,7 @@
                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
 
-                    <!-- Answer Option 3 (Bottom Left) -->
+                 
                     <Button Grid.Row="2" Grid.Column="0" 
                             Padding="15" MinHeight="80"
                             Command="{Binding AnswerQuestionCommand}"
@@ -166,7 +161,7 @@
                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
 
-                    <!-- Answer Option 4 (Bottom Right) -->
+                  
                     <Button Grid.Row="2" Grid.Column="2" 
                             Padding="15" MinHeight="80"
                             Command="{Binding AnswerQuestionCommand}"
@@ -197,7 +192,7 @@
             </Grid>
         </ScrollViewer>
 
-        <!-- Control Buttons -->
+      
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" 
                    Margin="20">
             <Button Content="Next Question" 

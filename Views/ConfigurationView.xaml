@@ -96,16 +96,6 @@
                                                       FontSize="10" Foreground="Green" TextWrapping="Wrap" MaxWidth="300"/>
                                         </StackPanel>
 
-                                        <Button Grid.Column="1" 
-                                                Command="{Binding DataContext.DeleteQuestionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Background="Transparent" 
-                                                BorderThickness="0"
-                                                Width="20" Height="20"
-                                                ToolTip="Delete Question"
-                                                VerticalAlignment="Top">
-                                            <TextBlock Text="🗑️" FontSize="12" HorizontalAlignment="Center"/>
-                                        </Button>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>

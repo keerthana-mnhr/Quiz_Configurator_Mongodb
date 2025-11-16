@@ -25,11 +25,6 @@
                 </MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem Header="Load Default Pack" Command="{Binding ConfigurationViewModel.LoadDefaultPackCommand}">
-                <MenuItem.Icon>
-                    <fa:FontAwesome Icon="List" />
-                </MenuItem.Icon>
-            </MenuItem>
             <Separator/>
             <MenuItem Header="Import Questions" InputGestureText="Ctrl+I">
                 <MenuItem.Icon>

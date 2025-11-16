@@ -11,7 +11,13 @@
         Height="600" Width="1000"
         MinHeight="500" MinWidth="800"
         WindowState="Normal">
-
+    <Window.InputBindings>
+        <KeyBinding Gesture="Insert" Command="{Binding ConfigurationViewModel.AddQuestionFromMenuCommand}" />
+        <KeyBinding Gesture="Delete" Command="{Binding ConfigurationViewModel.DeleteQuestionCommand}" />
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding ConfigurationViewModel.EditPackCommand}" />
+        <KeyBinding Gesture="Ctrl+P" Command="{Binding PlayerViewModel.StartQuizCommand}" />
+       
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
