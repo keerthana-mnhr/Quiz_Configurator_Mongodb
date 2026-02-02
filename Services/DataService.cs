@@ -4,162 +4,69 @@ using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Quiz_Configurator.Models;
 
 namespace Quiz_Configurator.Services
 {
-    internal static class DataService
+    internal class DataService
     {
-        private static readonly string AppDataFolder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "QuizConfigurator");
+        private QuizConfiguratorDbContext _dbContext;
 
-        private static readonly string PacksFolder = Path.Combine(AppDataFolder, "Packs");
-
-        private static readonly JsonSerializerOptions JsonOptions = new()
+       public DataService(QuizConfiguratorDbContext context)
         {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            PropertyNameCaseInsensitive = true,
-            AllowTrailingCommas = true,
-            ReadCommentHandling = JsonCommentHandling.Skip
-        };
+            _dbContext = context;
+        }
 
-        public static async Task SavePackAsync(QuestionPack pack)
+
+        public async Task SavePackAsync(QuestionPack pack)
         {
-            try
+            _dbContext.QuestionPacks.Add(pack);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task SavePacksAsync(IEnumerable<QuestionPack> packs)
+        {
+            _dbContext.QuestionPacks.AddRange(packs);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<QuestionPack?> LoadPackAsync(string packName)
+        {
+            return await _dbContext.QuestionPacks.FirstOrDefaultAsync(p => p.Name == packName);
+        }
+
+        public async Task<List<QuestionPack>> LoadPacksAsync()
+        {
+            return await _dbContext.QuestionPacks.ToListAsync();
+        }
+
+        public async Task DeletePackAsync(string packName)
+        {
+            var pack = await _dbContext.QuestionPacks.FirstOrDefaultAsync(p => p.Name == packName);
+            if(pack != null)
             {
-                Directory.CreateDirectory(PacksFolder);
-                var safeFileName = GetSafeFileName(pack.Name);
-                var filePath = Path.Combine(PacksFolder, $"{safeFileName}.json");
-                var json = JsonSerializer.Serialize(pack, JsonOptions);
-                await File.WriteAllTextAsync(filePath, json);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Failed to save question pack '{pack.Name}': {ex.Message}", ex);
+                _dbContext.QuestionPacks.Remove(pack);
+                await _dbContext.SaveChangesAsync();
             }
         }
 
-        public static async Task SavePacksAsync(IEnumerable<QuestionPack> packs)
+        public async Task<bool> PackFileExists(string packName)
         {
-            try
-            {
-                var tasks = packs.Select(pack => SavePackAsync(pack));
-                await Task.WhenAll(tasks);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Failed to save question packs: {ex.Message}", ex);
-            }
+            return await _dbContext.QuestionPacks.AnyAsync(p => p.Name == packName);
         }
 
-        public static async Task<QuestionPack?> LoadPackAsync(string packName)
+        
+
+        public async Task DeleteAllPackFiles()
         {
-            try
-            {
-                var safeFileName = GetSafeFileName(packName);
-                var filePath = Path.Combine(PacksFolder, $"{safeFileName}.json");
-
-                if (!File.Exists(filePath)) return null;
-
-                var json = await File.ReadAllTextAsync(filePath);
-                if (string.IsNullOrWhiteSpace(json)) return null;
-
-                return JsonSerializer.Deserialize<QuestionPack>(json, JsonOptions);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Failed to load question pack '{packName}': {ex.Message}", ex);
-            }
+            var packs = await _dbContext.QuestionPacks.ToListAsync();
+            _dbContext.QuestionPacks.RemoveRange(packs);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public static async Task<List<QuestionPack>> LoadPacksAsync()
-        {
-            try
-            {
-                if (!Directory.Exists(PacksFolder)) return new List<QuestionPack>();
+       
 
-                var packFiles = Directory.GetFiles(PacksFolder, "*.json");
-                var loadTasks = packFiles.Select(LoadPackFromFileAsync);
-                var results = await Task.WhenAll(loadTasks);
-
-                return results.Where(pack => pack != null).ToList()!;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Failed to load question packs: {ex.Message}", ex);
-            }
-        }
-
-        public static async Task DeletePackAsync(string packName)
-        {
-            try
-            {
-                var safeFileName = GetSafeFileName(packName);
-                var filePath = Path.Combine(PacksFolder, $"{safeFileName}.json");
-
-                if (File.Exists(filePath))
-                    File.Delete(filePath);
-
-                await Task.CompletedTask;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Failed to delete question pack '{packName}': {ex.Message}", ex);
-            }
-        }
-
-        public static bool PackFileExists(string packName)
-        {
-            var safeFileName = GetSafeFileName(packName);
-            var filePath = Path.Combine(PacksFolder, $"{safeFileName}.json");
-            return File.Exists(filePath);
-        }
-
-        public static string GetAppDataPath() => AppDataFolder;
-        public static string GetPacksPath() => PacksFolder;
-
-        public static void DeleteAllPackFiles()
-        {
-            try
-            {
-                if (!Directory.Exists(PacksFolder)) return;
-
-                var files = Directory.GetFiles(PacksFolder, "*.json");
-                Array.ForEach(files, File.Delete);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Failed to delete pack files: {ex.Message}", ex);
-            }
-        }
-
-        private static async Task<QuestionPack?> LoadPackFromFileAsync(string filePath)
-        {
-            try
-            {
-                var json = await File.ReadAllTextAsync(filePath);
-                if (string.IsNullOrWhiteSpace(json)) return null;
-                return JsonSerializer.Deserialize<QuestionPack>(json, JsonOptions);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static string GetSafeFileName(string packName)
-        {
-            if (string.IsNullOrEmpty(packName)) return "UnnamedPack";
-
-            var invalidChars = Path.GetInvalidFileNameChars();
-            var safeName = new string(packName.Where(c => !invalidChars.Contains(c)).ToArray());
-            safeName = Regex.Replace(safeName, @"\s+", "_");
-
-            return safeName.Length > 50
-                ? safeName[..50]
-                : string.IsNullOrEmpty(safeName) ? "UnnamedPack" : safeName;
-        }
+        
     }
 }
