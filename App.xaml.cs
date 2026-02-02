@@ -10,6 +10,7 @@ namespace Quiz_Configurator
     /// </summary>
     public partial class App : Application
     {
+
     }
 
 }

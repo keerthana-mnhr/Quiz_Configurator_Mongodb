@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Quiz_Configurator.Models
 {
@@ -25,6 +27,8 @@ namespace Quiz_Configurator.Models
             Questions = new List<Question>();
         }
 
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Name { get; set; } = string.Empty;
         public Difficulty Difficulty { get; set; }
         public int TimeLimitInSeconds { get; set; }
