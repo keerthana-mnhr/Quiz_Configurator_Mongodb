@@ -9,7 +9,7 @@ using Quiz_Configurator.Models;
 
 namespace Quiz_Configurator.Services
 {
-    internal class QuizConfiguratorDbContext:DbContext
+    public class QuizConfiguratorDbContext:DbContext
     {
         public DbSet<QuestionPack> QuestionPacks => Set<QuestionPack>();
 

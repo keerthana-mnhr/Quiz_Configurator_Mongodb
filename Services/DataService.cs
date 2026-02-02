@@ -9,9 +9,9 @@ using Quiz_Configurator.Models;
 
 namespace Quiz_Configurator.Services
 {
-    internal class DataService
+    public class DataService
     {
-        private QuizConfiguratorDbContext _dbContext;
+        public QuizConfiguratorDbContext _dbContext;
 
        public DataService(QuizConfiguratorDbContext context)
         {
