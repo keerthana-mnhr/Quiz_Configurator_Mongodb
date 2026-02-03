@@ -89,6 +89,20 @@ namespace Quiz_Configurator.Services
             _dbContext.SaveChanges();
         }
 
+        public async Task<List<Category>> LoadCategoriesAsync()
+        {
+            return await _dbContext.Categories.ToListAsync();
+        }
+
+        public async Task SaveCategoryAsync(Category category)
+        {
+            if (string.IsNullOrWhiteSpace(category.Id))
+                _dbContext.Categories.Add(category);
+            else
+                _dbContext.Categories.Update(category);
+
+            await _dbContext.SaveChangesAsync();
+        }
 
 
     }

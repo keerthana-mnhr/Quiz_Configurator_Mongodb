@@ -12,6 +12,7 @@ namespace Quiz_Configurator.Services
     public class QuizConfiguratorDbContext:DbContext
     {
         public DbSet<QuestionPack> QuestionPacks => Set<QuestionPack>();
+        public DbSet<Category> Categories => Set<Category>();
 
         public QuizConfiguratorDbContext(DbContextOptions<QuizConfiguratorDbContext> options) : base(options)
         {
@@ -21,6 +22,7 @@ namespace Quiz_Configurator.Services
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<QuestionPack>().ToCollection("questionPacks");
+            modelBuilder.Entity<Category>().ToCollection("categories");
         }
     }
 }

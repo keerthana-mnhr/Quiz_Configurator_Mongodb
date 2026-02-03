@@ -34,5 +34,11 @@ namespace Quiz_Configurator.Models
         public Difficulty Difficulty { get; set; }
         public int TimeLimitInSeconds { get; set; }
         public List<Question> Questions { get; set; } = new();
+        
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string CategoryId { get; set; } = string.Empty;
+
+        [BsonIgnore]
+        public Category? Category { get; set; }
     }
 }
