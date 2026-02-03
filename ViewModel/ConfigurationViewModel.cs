@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Quiz_Configurator.Command;
+using Quiz_Configurator.Dialogs;
+using Quiz_Configurator.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Quiz_Configurator.Command;
-using Quiz_Configurator.Dialogs;
-using Quiz_Configurator.Models;
 
 namespace Quiz_Configurator.ViewModel
 {
@@ -27,6 +28,7 @@ namespace Quiz_Configurator.ViewModel
             CreateNewPackCommand = new DelegateCommand(CreateNewPack);
             SelectPackCommand = new DelegateCommand(SelectPack);
             DeletePackCommand = new DelegateCommand(DeletePack, CanDeletePack);
+            
         }
 
 
@@ -146,9 +148,9 @@ namespace Quiz_Configurator.ViewModel
             }
         }
 
+        
 
 
- 
         private void AddQuestionFromMenu(object? parameter)
         {
             if (mainWindowViewModel?.ActivePack == null)

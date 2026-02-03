@@ -37,6 +37,15 @@ namespace Quiz_Configurator.ViewModel
                 }
             }
         }
+        public ObservableCollection<Category> Categories { get; } = new();
+
+        public async Task LoadCategoriesAsync()
+        {
+            var categories = await App.MongoDBDataService.LoadCategoriesAsync();
+            Categories.Clear();
+            foreach (var cat in categories)
+                Categories.Add(cat);
+        }
 
         public bool IsLoading
         {
@@ -70,6 +79,8 @@ namespace Quiz_Configurator.ViewModel
                     foreach (var pack in savedPacks)
                     {
                         var packViewModel = new QuestionPackViewModel(pack);
+                        packViewModel.Categories = Categories;
+                        packViewModel.SelectedCategory = Categories.FirstOrDefault(c => c.Id == pack.CategoryId);
                         Packs.Add(packViewModel);
                         SetupAutoSaveForPack(packViewModel);
                     }

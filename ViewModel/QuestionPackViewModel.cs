@@ -69,6 +69,24 @@ namespace Quiz_Configurator.ViewModel
 
         public ObservableCollection<Question> Questions { get; }
 
+        public ObservableCollection<Category> Categories { get; set; }
+
+        private Category? _selectedCategory;
+        public Category? SelectedCategory
+        {
+            get => _selectedCategory;
+            set
+            {
+                if (_selectedCategory != value)
+                {
+                    _selectedCategory = value;
+                    _model.CategoryId = value?.Id ?? string.Empty;
+                    _model.Category = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public QuestionPack GetQuestionPack() => _model;
 
         private void OnQuestionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

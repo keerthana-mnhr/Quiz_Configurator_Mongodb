@@ -46,6 +46,16 @@
                     <ComboBoxItem Content="Difficult"/>
                 </ComboBox>
 
+                <TextBlock Text="Category:" FontWeight="Bold" Margin="0,0,0,5"/>
+                <ComboBox x:Name="CategoryComboBox"
+                           Height="25"
+                            BorderBrush="Black" BorderThickness="1"
+                            Margin="0,0,0,15"
+                        ItemsSource="{Binding Categories}"
+                            DisplayMemberPath="Name"
+                            SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
+                </ComboBox>
+
                 <TextBlock Text="Time Limit:" FontWeight="Bold" Margin="0,0,0,5"/>
                 <TextBlock Text="{Binding ElementName=TimeLimitSlider, Path=Value, StringFormat='{}{0:F0} Seconds'}" 
                           HorizontalAlignment="Right" Margin="0,0,0,5"/>
