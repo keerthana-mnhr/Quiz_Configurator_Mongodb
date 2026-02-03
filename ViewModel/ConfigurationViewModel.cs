@@ -427,16 +427,17 @@ namespace Quiz_Configurator.ViewModel
 
             try
             {
-          
+                //var a=mainWindowViewModel.ActivePack.Questions.Where(x => x.Query ==SelectedQuestion.Query)
                 SelectedQuestion.Query = NewQuestionText;
                 SelectedQuestion.CorrectAnswer = CorrectAnswer;
                 SelectedQuestion.IncorrectAnswers = new[] { FirstIncorrectAnswer, SecondIncorrectAnswer, ThirdIncorrectAnswer };
 
-              
+                UpdateQuestionCommand.RaiseCanExecuteChanged();
                 ClearForm();
                 SelectedQuestion = null;
+                //mainWindowViewModel.ActivePack.Questions.Remove(SelectedQuestion);
 
-               
+                //mainWindowViewModel.ActivePack.Questions;
                 MessageBox.Show("Question updated successfully!", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }

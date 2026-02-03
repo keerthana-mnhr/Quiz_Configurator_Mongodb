@@ -202,15 +202,15 @@ namespace Quiz_Configurator.ViewModel
             var collection = database.GetCollection<QuestionPack>("questionPacks");
 
             await collection.InsertOneAsync(defaultPack);
-            Packs.Add(packViewModel);
-            ActivePack = packViewModel;
+            //Packs.Add(packViewModel);
+            //ActivePack = packViewModel;
 
-            if (!_isLoading)
-            {
+            //if (!_isLoading)
+            //{
                 
                 //_ = SavePackToStorageAsync(packViewModel);
                 await LoadPacksFromStorageAsync();
-            }
+            //}
         }
 
         private void SetupAutoSaveForPack(QuestionPackViewModel packViewModel)

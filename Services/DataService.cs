@@ -21,13 +21,30 @@ namespace Quiz_Configurator.Services
 
         public async Task SavePackAsync(QuestionPack pack)
         {
-            _dbContext.QuestionPacks.Add(pack);
-            await _dbContext.SaveChangesAsync();
+
+            AddOrUpdatePack(pack);
+                await _dbContext.SaveChangesAsync();
+        }
+
+        private void AddOrUpdatePack(QuestionPack pack)
+        {
+            if (string.IsNullOrWhiteSpace(pack.Id))
+            {
+                _dbContext.QuestionPacks.Add(pack);
+            }
+            else
+            {
+                _dbContext.QuestionPacks.Update(pack);
+            }
         }
 
         public async Task SavePacksAsync(IEnumerable<QuestionPack> packs)
         {
-            _dbContext.QuestionPacks.AddRange(packs);
+            foreach(var pk in packs)
+            {
+                AddOrUpdatePack(pk);
+            }
+            //_dbContext.QuestionPacks.AddRange(packs);
             await _dbContext.SaveChangesAsync();
         }
 
