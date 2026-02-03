@@ -432,6 +432,8 @@ namespace Quiz_Configurator.ViewModel
                 SelectedQuestion.CorrectAnswer = CorrectAnswer;
                 SelectedQuestion.IncorrectAnswers = new[] { FirstIncorrectAnswer, SecondIncorrectAnswer, ThirdIncorrectAnswer };
 
+                var pack = mainWindowViewModel.ActivePack.GetQuestionPack();
+                await App.MongoDBDataService.SavePackAsync(pack);
                 UpdateQuestionCommand.RaiseCanExecuteChanged();
                 ClearForm();
                 SelectedQuestion = null;
@@ -492,6 +494,8 @@ namespace Quiz_Configurator.ViewModel
                     mainWindowViewModel.ActivePack.Name = newPackName;
                     mainWindowViewModel.ActivePack.Difficulty = GetDifficultyFromDialog(dialog);
                     mainWindowViewModel.ActivePack.TimeLimitInSeconds = (int)dialog.TimeLimitSlider.Value;
+                    var pack = mainWindowViewModel.ActivePack;
+                    mainWindowViewModel.SavePackToStorage(pack);
 
                     MessageBox.Show($"Pack '{newPackName}' updated successfully!", "Success",
                         MessageBoxButton.OK, MessageBoxImage.Information);

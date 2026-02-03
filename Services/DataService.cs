@@ -82,8 +82,14 @@ namespace Quiz_Configurator.Services
             await _dbContext.SaveChangesAsync();
         }
 
-       
+        public void SavePack(QuestionPack pack)
+        {
 
-        
+            AddOrUpdatePack(pack);
+            _dbContext.SaveChanges();
+        }
+
+
+
     }
 }

@@ -106,6 +106,20 @@ namespace Quiz_Configurator.ViewModel
             }
         }
 
+        public void SavePackToStorage(QuestionPackViewModel packViewModel)
+        {
+            try
+            {
+                var pack = packViewModel.GetQuestionPack();
+                App.MongoDBDataService.SavePack(pack);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving pack '{packViewModel.Name}': {ex.Message}", "Save Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         public async Task SaveAllPacksToStorageAsync()
         {
             try
