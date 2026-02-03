@@ -1,4 +1,5 @@
-﻿using Quiz_Configurator.Models;
+﻿using MongoDB.Driver;
+using Quiz_Configurator.Models;
 using Quiz_Configurator.Services;
 using System;
 using System.Collections.Generic;
@@ -195,13 +196,19 @@ namespace Quiz_Configurator.ViewModel
 
        
             var packViewModel = new QuestionPackViewModel(defaultPack);
-            SetupAutoSaveForPack(packViewModel);
+            //SetupAutoSaveForPack(packViewModel);
+            var client = new MongoClient("mongodb://localhost:27017");
+            var database = client.GetDatabase("KeerthanaManoharan");
+            var collection = database.GetCollection<QuestionPack>("questionPacks");
+
+            await collection.InsertOneAsync(defaultPack);
             Packs.Add(packViewModel);
             ActivePack = packViewModel;
 
             if (!_isLoading)
             {
-                _ = SavePackToStorageAsync(packViewModel);
+                
+                //_ = SavePackToStorageAsync(packViewModel);
                 await LoadPacksFromStorageAsync();
             }
         }

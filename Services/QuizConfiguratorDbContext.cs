@@ -20,7 +20,7 @@ namespace Quiz_Configurator.Services
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<QuestionPack>().ToCollection("QuestionPack");
+            modelBuilder.Entity<QuestionPack>().ToCollection("questionPacks");
         }
     }
 }
