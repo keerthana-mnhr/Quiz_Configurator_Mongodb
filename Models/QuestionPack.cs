@@ -29,6 +29,7 @@ namespace Quiz_Configurator.Models
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public Difficulty Difficulty { get; set; }
         public int TimeLimitInSeconds { get; set; }

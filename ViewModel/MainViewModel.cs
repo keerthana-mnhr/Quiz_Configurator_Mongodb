@@ -61,7 +61,7 @@ namespace Quiz_Configurator.ViewModel
             try
             {
                 IsLoading = true;
-                var savedPacks = await DataService.LoadPacksAsync();
+                var savedPacks = await App.MongoDBDataService.LoadPacksAsync();
                 Packs.Clear();
 
                 if (savedPacks.Count > 0)
@@ -76,14 +76,14 @@ namespace Quiz_Configurator.ViewModel
                 }
                 else
                 {
-                    LoadDefaultPack();
+                    await LoadDefaultPack();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading saved packs: {ex.Message}\n\nLoading default pack instead.",
                     "Load Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                LoadDefaultPack();
+                await LoadDefaultPack();
             }
             finally
             {
@@ -96,8 +96,8 @@ namespace Quiz_Configurator.ViewModel
             try
             {
                 var pack = packViewModel.GetQuestionPack();
-                await DataService.SavePackAsync(pack);
-            }
+                await App.MongoDBDataService.SavePackAsync(pack);
+                }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error saving pack '{packViewModel.Name}': {ex.Message}", "Save Error",
@@ -109,15 +109,22 @@ namespace Quiz_Configurator.ViewModel
         {
             try
             {
-                var packsToSave = Packs.Select(p => p.GetQuestionPack()).ToList();
-                await DataService.SavePacksAsync(packsToSave);
+                foreach (var packViewModel in Packs)
+                {
+                    
+                    await SavePackToStorageAsync(packViewModel);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving packs: {ex.Message}", "Save Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error saving packs:{ex.Message} ",
+                    "Save Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
             }
         }
+
 
         public async Task AddPackAsync(QuestionPackViewModel packViewModel)
         {
@@ -131,7 +138,7 @@ namespace Quiz_Configurator.ViewModel
         {
             try
             {
-                await DataService.DeletePackAsync(packViewModel.Name);
+                await App.MongoDBDataService.DeletePackAsync(packViewModel.Name);
                 Packs.Remove(packViewModel);
 
                 if (ActivePack == packViewModel)
@@ -151,7 +158,7 @@ namespace Quiz_Configurator.ViewModel
             try
             {
                 var oldName = packViewModel.Name;
-                await DataService.DeletePackAsync(oldName);
+                await App.MongoDBDataService.DeletePackAsync(oldName);
                 packViewModel.Name = newName;
                 await SavePackToStorageAsync(packViewModel);
             }
@@ -162,16 +169,16 @@ namespace Quiz_Configurator.ViewModel
             }
         }
 
-        public void LoadDefaultPack()
+        public async Task LoadDefaultPack()
         {
-            var existingDefaultPack = Packs.FirstOrDefault(p => p.Name.Contains("Default Question Pack"));
+            var existingDefaultPack = Packs.FirstOrDefault(p => p.Name.Contains("Default Questions"));
             if (existingDefaultPack != null)
             {
                 ActivePack = existingDefaultPack;
                 return;
             }
 
-            var defaultPack = new QuestionPack("Default Question Pack (Medium)")
+            var defaultPack = new QuestionPack("Default Questions")
             {
                 Difficulty = Difficulty.Medium,
                 TimeLimitInSeconds = 30
@@ -186,6 +193,7 @@ namespace Quiz_Configurator.ViewModel
                     new Question("What is the largest mammal in the world?", "Blue Whale", "Elephant", "Giraffe", "Hippopotamus")
                 });
 
+       
             var packViewModel = new QuestionPackViewModel(defaultPack);
             SetupAutoSaveForPack(packViewModel);
             Packs.Add(packViewModel);
@@ -194,6 +202,7 @@ namespace Quiz_Configurator.ViewModel
             if (!_isLoading)
             {
                 _ = SavePackToStorageAsync(packViewModel);
+                await LoadPacksFromStorageAsync();
             }
         }
 
