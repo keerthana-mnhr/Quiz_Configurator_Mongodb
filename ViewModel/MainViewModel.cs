@@ -210,21 +210,35 @@ namespace Quiz_Configurator.ViewModel
 
        
             var packViewModel = new QuestionPackViewModel(defaultPack);
-            //SetupAutoSaveForPack(packViewModel);
+            
             var client = new MongoClient("mongodb://localhost:27017");
             var database = client.GetDatabase("KeerthanaManoharan");
+
+            var categoryCollection = database.GetCollection<Category>("categories");
+            var categories = await categoryCollection.Find(Builders<Category>.Filter.Empty).ToListAsync();
+
+            if (categories.Count == 0)
+            {
+                var defaultCategories = new List<Category>
+                  {
+                    new Category { Name = "General Knowledge" },
+                    new Category { Name = "Science" },
+                    new Category { Name = "History" }
+                    };
+
+                await categoryCollection.InsertManyAsync(defaultCategories);
+                categories = await categoryCollection.Find(Builders<Category>.Filter.Empty).ToListAsync();
+               
+            }
+            var selectedCategory = categories.First();
+            defaultPack.CategoryId = selectedCategory.Id;
             var collection = database.GetCollection<QuestionPack>("questionPacks");
 
             await collection.InsertOneAsync(defaultPack);
-            //Packs.Add(packViewModel);
-            //ActivePack = packViewModel;
-
-            //if (!_isLoading)
-            //{
+           
                 
-                //_ = SavePackToStorageAsync(packViewModel);
                 await LoadPacksFromStorageAsync();
-            //}
+            
         }
 
         private void SetupAutoSaveForPack(QuestionPackViewModel packViewModel)
