@@ -58,7 +58,7 @@ namespace Quiz_Configurator.Dialogs
 
         private void PackListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            // Optional: You can add preview functionality here
+           
         }
     }
 }

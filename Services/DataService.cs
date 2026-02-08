@@ -53,7 +53,6 @@ namespace Quiz_Configurator.Services
             }
         }
 
-        // Add new method specifically for adding questions to existing packs
         public async Task AddQuestionToPackAsync(string packId, Question question)
         {
             try
@@ -67,10 +66,8 @@ namespace Quiz_Configurator.Services
                     throw new InvalidOperationException("Question pack not found.");
                 }
 
-                // Add the new question to the pack
                 pack.Questions.Add(question);
 
-                // Clear navigation property
                 pack.Category = null;
 
                 _dbContext.QuestionPacks.Update(pack);
@@ -83,15 +80,12 @@ namespace Quiz_Configurator.Services
             }
         }
 
-        // Add method to update a specific question in a pack
         public async Task UpdateQuestionInPackAsync(string packId, Question oldQuestion, Question newQuestion)
         {
             try
             {
-                // First, clear the change tracker to avoid tracking conflicts
                 _dbContext.ChangeTracker.Clear();
 
-                // Load the pack WITHOUT tracking
                 var pack = await _dbContext.QuestionPacks
                     .FirstOrDefaultAsync(p => p.Id == packId);
 
@@ -100,7 +94,6 @@ namespace Quiz_Configurator.Services
                     throw new InvalidOperationException("Question pack not found.");
                 }
 
-                // Find and replace the question
                 var questionIndex = pack.Questions.FindIndex(q =>
                     q.Query == oldQuestion.Query &&
                     q.CorrectAnswer == oldQuestion.CorrectAnswer);
@@ -129,7 +122,6 @@ namespace Quiz_Configurator.Services
             }
         }
 
-        // Add method to remove a question from a pack
         public async Task RemoveQuestionFromPackAsync(string packId, Question question)
         {
             try
@@ -143,7 +135,6 @@ namespace Quiz_Configurator.Services
                     throw new InvalidOperationException("Question pack not found.");
                 }
 
-                // Remove the question from the pack
                 var questionToRemove = pack.Questions.FirstOrDefault(q =>
                     q.Query == question.Query &&
                     q.CorrectAnswer == question.CorrectAnswer);
@@ -153,7 +144,6 @@ namespace Quiz_Configurator.Services
                     pack.Questions.Remove(questionToRemove);
                 }
 
-                // Clear navigation property
                 pack.Category = null;
 
 
@@ -183,22 +173,7 @@ namespace Quiz_Configurator.Services
                _dbContext.QuestionPacks.Update(pack);
             }
         }
-
-        public async Task SavePacksAsync(IEnumerable<QuestionPack> packs)
-        {
-            _dbContext.ChangeTracker.Clear();
-            foreach (var pk in packs)
-            {
-                AddOrUpdatePack(pk);
-            }
-            await _dbContext.SaveChangesAsync();
-            _dbContext.ChangeTracker.Clear();
-        }
-
-        public async Task<QuestionPack?> LoadPackAsync(string packName)
-        {
-            return await _dbContext.QuestionPacks.FirstOrDefaultAsync(p => p.Name == packName);
-        }
+             
 
         public async Task<List<QuestionPack>> LoadPacksAsync()
         {
@@ -218,20 +193,7 @@ namespace Quiz_Configurator.Services
             _dbContext.ChangeTracker.Clear();
         }
 
-        public async Task<bool> PackFileExists(string packName)
-        {
-            return await _dbContext.QuestionPacks.AnyAsync(p => p.Name == packName);
-        }
-
-        public async Task DeleteAllPackFiles()
-        {
-            _dbContext.ChangeTracker.Clear();
-            var packs = await _dbContext.QuestionPacks.ToListAsync();
-            _dbContext.QuestionPacks.RemoveRange(packs);
-            await _dbContext.SaveChangesAsync();
-            _dbContext.ChangeTracker.Clear();
-        }
-
+       
         public void SavePack(QuestionPack pack)
         {
             _dbContext.ChangeTracker.Clear();

@@ -38,7 +38,6 @@ namespace Quiz_Configurator.Dialogs
                     var newCategory = new Category { Name = categoryName };
                     await App.MongoDBDataService.SaveCategoryAsync(newCategory);
 
-                    // Refresh the categories in the current dialog
                     if (DataContext is QuestionPackViewModel viewModel)
                     {
                         var categories = await App.MongoDBDataService.LoadCategoriesAsync();
