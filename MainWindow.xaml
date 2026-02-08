@@ -41,17 +41,5 @@
         </views:ConfigurationView>
 
         
-        <views:PlayerView Grid.Row="1" DataContext="{Binding PlayerViewModel}">
-            <views:PlayerView.Style>
-                <Style TargetType="views:PlayerView">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsPlaying}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </views:PlayerView.Style>
-        </views:PlayerView>
     </Grid>
 </Window>

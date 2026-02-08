@@ -1,12 +1,6 @@
 ﻿using Quiz_Configurator.Command;
 using Quiz_Configurator.Dialogs;
 using Quiz_Configurator.Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -22,13 +16,13 @@ namespace Quiz_Configurator.ViewModel
             AddQuestionCommand = new DelegateCommand(AddQuestion, CanAddQuestion);
             AddQuestionFromMenuCommand = new DelegateCommand(AddQuestionFromMenu);
             DeleteQuestionCommand = new DelegateCommand(DeleteQuestion, CanDeleteQuestion);
-            UpdateQuestionCommand = new DelegateCommand(UpdateQuestion, CanUpdateQuestion); 
+            UpdateQuestionCommand = new DelegateCommand(UpdateQuestion, CanUpdateQuestion);
             CancelEditCommand = new DelegateCommand(CancelEdit);
             EditPackCommand = new DelegateCommand(EditPack, CanEditPack);
             CreateNewPackCommand = new DelegateCommand(CreateNewPack);
             SelectPackCommand = new DelegateCommand(SelectPack);
             DeletePackCommand = new DelegateCommand(DeletePack, CanDeletePack);
-            
+
         }
 
 
@@ -57,7 +51,7 @@ namespace Quiz_Configurator.ViewModel
                 _newQuestionText = value;
                 RaisePropertyChanged();
                 AddQuestionCommand.RaiseCanExecuteChanged();
-                UpdateQuestionCommand.RaiseCanExecuteChanged(); 
+                UpdateQuestionCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -83,7 +77,7 @@ namespace Quiz_Configurator.ViewModel
                 _firstIncorrectAnswer = value;
                 RaisePropertyChanged();
                 AddQuestionCommand.RaiseCanExecuteChanged();
-                UpdateQuestionCommand.RaiseCanExecuteChanged(); 
+                UpdateQuestionCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -135,7 +129,7 @@ namespace Quiz_Configurator.ViewModel
                 _selectedQuestion = value;
                 RaisePropertyChanged();
                 DeleteQuestionCommand.RaiseCanExecuteChanged();
-                UpdateQuestionCommand.RaiseCanExecuteChanged(); 
+                UpdateQuestionCommand.RaiseCanExecuteChanged();
 
                 if (value != null)
                 {
@@ -148,10 +142,10 @@ namespace Quiz_Configurator.ViewModel
             }
         }
 
-        
 
 
-        private void AddQuestionFromMenu(object? parameter)
+
+        void AddQuestionFromMenu(object? parameter)
         {
             if (mainWindowViewModel?.ActivePack == null)
             {
@@ -162,6 +156,10 @@ namespace Quiz_Configurator.ViewModel
 
             try
             {
+                // Set flag to prevent auto-save
+                if (mainWindowViewModel != null)
+                    mainWindowViewModel.IsManualQuestionOperation = true;
+
                 var question = new Question(
                     "New Question",
                     "Correct Answer",
@@ -170,13 +168,22 @@ namespace Quiz_Configurator.ViewModel
                     "Wrong Answer 3"
                 );
 
+                // Add to local collection
                 mainWindowViewModel.ActivePack.Questions.Add(question);
                 SelectedQuestion = question;
+
+                // Don't save here - let the user edit first, then they'll click "Add Question" to save
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error adding question: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                // Always reset the flag
+                if (mainWindowViewModel != null)
+                    mainWindowViewModel.IsManualQuestionOperation = false;
             }
         }
 
@@ -184,7 +191,25 @@ namespace Quiz_Configurator.ViewModel
         {
             try
             {
+                // Ensure categories are loaded
+                if (mainWindowViewModel?.Categories.Count == 0)
+                {
+                    await mainWindowViewModel.LoadCategoriesAsync();
+                }
+
                 var dialog = new New_Question_Pack();
+                var tempPack = new QuestionPack("", Difficulty.Medium, 30);
+                var dialogViewModel = new QuestionPackViewModel(tempPack);
+
+                // Assign categories to dialog viewmodel
+                foreach (var category in mainWindowViewModel.Categories)
+                {
+                    dialogViewModel.Categories.Add(category);
+                }
+                dialogViewModel.SelectedCategory = dialogViewModel.Categories.FirstOrDefault();
+
+                dialog.DataContext = dialogViewModel;
+
                 if (Application.Current.MainWindow != null)
                 {
                     dialog.Owner = Application.Current.MainWindow;
@@ -194,7 +219,7 @@ namespace Quiz_Configurator.ViewModel
 
                 if (result == true)
                 {
-                    var packName = dialog.PackName;
+                    var packName = dialog.PackName.Trim();
 
                     if (string.IsNullOrWhiteSpace(packName))
                     {
@@ -210,16 +235,30 @@ namespace Quiz_Configurator.ViewModel
                         return;
                     }
 
-                    var newPack = new QuestionPack(packName, dialog.SelectedDifficulty, dialog.TimeLimitInSeconds);
+                    // Get the selected category from the dialog
+                    var selectedCategory = dialog.SelectedCategory;
+
+                    // Create new pack - let EF generate the ID
+                    var newPack = new QuestionPack(packName, dialog.SelectedDifficulty, dialog.TimeLimitInSeconds)
+                    {
+                        CategoryId = selectedCategory?.Id ?? string.Empty
+                    };
+
                     var packViewModel = new QuestionPackViewModel(newPack);
+
+                    // Setup categories for the new pack
+                    foreach (var category in mainWindowViewModel.Categories)
+                    {
+                        packViewModel.Categories.Add(category);
+                    }
+                    packViewModel.SelectedCategory = selectedCategory;
 
                     if (mainWindowViewModel != null)
                     {
                         await mainWindowViewModel.AddPackAsync(packViewModel);
+                        MessageBox.Show($"Pack '{packName}' created successfully!", "Success",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
                     }
-
-                    MessageBox.Show($"Pack '{packName}' created successfully!", "Success",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
@@ -259,6 +298,15 @@ namespace Quiz_Configurator.ViewModel
             {
                 MessageBox.Show($"Error selecting pack: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        public DelegateCommand AddCategoryCommand => new DelegateCommand(AddCategory);
+
+        private async void AddCategory(object? parameter)
+        {
+            if (mainWindowViewModel != null)
+            {
+                mainWindowViewModel.AddCategoryCommand.Execute(null);
             }
         }
 
@@ -307,6 +355,10 @@ namespace Quiz_Configurator.ViewModel
 
             try
             {
+                // Set flag to prevent auto-save
+                if (mainWindowViewModel != null)
+                    mainWindowViewModel.IsManualQuestionOperation = true;
+
                 var question = new Question(
                     NewQuestionText,
                     CorrectAnswer,
@@ -315,16 +367,22 @@ namespace Quiz_Configurator.ViewModel
                     ThirdIncorrectAnswer
                 );
 
+                // Get the pack ID
+                var pack = mainWindowViewModel.ActivePack.GetQuestionPack();
+
+                // Use the specific method for adding questions
+                await App.MongoDBDataService.AddQuestionToPackAsync(pack.Id, question);
+
+                // Add to local collection AFTER successful database save
                 mainWindowViewModel.ActivePack.Questions.Add(question);
 
-        
+                // Clear form
                 NewQuestionText = string.Empty;
                 CorrectAnswer = string.Empty;
                 FirstIncorrectAnswer = string.Empty;
                 SecondIncorrectAnswer = string.Empty;
                 ThirdIncorrectAnswer = string.Empty;
 
-              
                 MessageBox.Show("Question added successfully!", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -332,6 +390,12 @@ namespace Quiz_Configurator.ViewModel
             {
                 MessageBox.Show($"Error adding question: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                // Always reset the flag
+                if (mainWindowViewModel != null)
+                    mainWindowViewModel.IsManualQuestionOperation = false;
             }
         }
 
@@ -345,7 +409,7 @@ namespace Quiz_Configurator.ViewModel
                    mainWindowViewModel?.ActivePack != null;
         }
 
-        private void DeleteQuestion(object? parameter)
+        private async void DeleteQuestion(object? parameter)
         {
             Question? questionToDelete = null;
 
@@ -370,6 +434,17 @@ namespace Quiz_Configurator.ViewModel
 
                 if (result == MessageBoxResult.Yes)
                 {
+                    // Set flag to prevent auto-save
+                    if (mainWindowViewModel != null)
+                        mainWindowViewModel.IsManualQuestionOperation = true;
+
+                    // Get the pack ID
+                    var pack = mainWindowViewModel.ActivePack.GetQuestionPack();
+
+                    // Use the specific method for removing questions
+                    await App.MongoDBDataService.RemoveQuestionFromPackAsync(pack.Id, questionToDelete);
+
+                    // Remove from local collection AFTER successful database delete
                     mainWindowViewModel.ActivePack.Questions.Remove(questionToDelete);
 
                     if (SelectedQuestion == questionToDelete)
@@ -385,6 +460,12 @@ namespace Quiz_Configurator.ViewModel
             {
                 MessageBox.Show($"Error deleting question: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                // Always reset the flag
+                if (mainWindowViewModel != null)
+                    mainWindowViewModel.IsManualQuestionOperation = false;
             }
         }
 
@@ -429,19 +510,43 @@ namespace Quiz_Configurator.ViewModel
 
             try
             {
-                //var a=mainWindowViewModel.ActivePack.Questions.Where(x => x.Query ==SelectedQuestion.Query)
+                // Set flag to prevent auto-save
+                if (mainWindowViewModel != null)
+                    mainWindowViewModel.IsManualQuestionOperation = true;
+
+                // Get the pack ID
+                var pack = mainWindowViewModel.ActivePack.GetQuestionPack();
+
+                // Store the old question for database update
+                var oldQuestion = new Question(
+                    SelectedQuestion.Query,
+                    SelectedQuestion.CorrectAnswer,
+                    SelectedQuestion.IncorrectAnswers?[0] ?? "",
+                    SelectedQuestion.IncorrectAnswers?[1] ?? "",
+                    SelectedQuestion.IncorrectAnswers?[2] ?? ""
+                );
+
+                // Create new question with updated values
+                var newQuestion = new Question(
+                    NewQuestionText,
+                    CorrectAnswer,
+                    FirstIncorrectAnswer,
+                    SecondIncorrectAnswer,
+                    ThirdIncorrectAnswer
+                );
+
+                // Use the specific method for updating questions
+                await App.MongoDBDataService.UpdateQuestionInPackAsync(pack.Id, oldQuestion, newQuestion);
+
+                // Update the local question object AFTER successful database save
                 SelectedQuestion.Query = NewQuestionText;
                 SelectedQuestion.CorrectAnswer = CorrectAnswer;
                 SelectedQuestion.IncorrectAnswers = new[] { FirstIncorrectAnswer, SecondIncorrectAnswer, ThirdIncorrectAnswer };
 
-                var pack = mainWindowViewModel.ActivePack.GetQuestionPack();
-                await App.MongoDBDataService.SavePackAsync(pack);
                 UpdateQuestionCommand.RaiseCanExecuteChanged();
                 ClearForm();
                 SelectedQuestion = null;
-                //mainWindowViewModel.ActivePack.Questions.Remove(SelectedQuestion);
 
-                //mainWindowViewModel.ActivePack.Questions;
                 MessageBox.Show("Question updated successfully!", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -449,6 +554,12 @@ namespace Quiz_Configurator.ViewModel
             {
                 MessageBox.Show($"Error updating question: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                // Always reset the flag
+                if (mainWindowViewModel != null)
+                    mainWindowViewModel.IsManualQuestionOperation = false;
             }
         }
 
@@ -474,7 +585,7 @@ namespace Quiz_Configurator.ViewModel
                     dialog.Owner = Application.Current.MainWindow;
                 }
 
-          
+
                 dialog.PackName.Text = mainWindowViewModel.ActivePack.Name;
                 SetDifficultyInDialog(dialog, mainWindowViewModel.ActivePack.Difficulty);
                 dialog.TimeLimitSlider.Value = mainWindowViewModel.ActivePack.TimeLimitInSeconds;
@@ -492,7 +603,7 @@ namespace Quiz_Configurator.ViewModel
                         return;
                     }
 
-                 
+
                     mainWindowViewModel.ActivePack.Name = newPackName;
                     mainWindowViewModel.ActivePack.Difficulty = GetDifficultyFromDialog(dialog);
                     mainWindowViewModel.ActivePack.TimeLimitInSeconds = (int)dialog.TimeLimitSlider.Value;
@@ -557,6 +668,6 @@ namespace Quiz_Configurator.ViewModel
                    !string.IsNullOrWhiteSpace(ThirdIncorrectAnswer) &&
                    mainWindowViewModel?.ActivePack != null;
         }
-      
+
     }
 }

@@ -24,52 +24,13 @@
                     <fa:FontAwesome Icon="Remove" />
                 </MenuItem.Icon>
             </MenuItem>
-            <Separator/>
-            <Separator/>
-            <MenuItem Header="Import Questions" InputGestureText="Ctrl+I">
-                <MenuItem.Icon>
-                    <fa:FontAwesome Icon="Download" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <Separator/>
+            <Separator/>           
             <MenuItem Header="Exit" InputGestureText="Alt+F4" Click="Exit_Click">
                 <MenuItem.Icon>
                     <fa:FontAwesome Icon="PowerOff" />
                 </MenuItem.Icon>
             </MenuItem>
-        </MenuItem>
-
-        <MenuItem Header="_Edit">
-            <MenuItem Header="Add Question" InputGestureText="Insert" Command="{Binding ConfigurationViewModel.AddQuestionFromMenuCommand}">
-                <MenuItem.Icon>
-                    <fa:FontAwesome Icon="Plus"/>
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <MenuItem Header="Delete Question" InputGestureText="Delete" Command="{Binding ConfigurationViewModel.DeleteQuestionCommand}">
-                <MenuItem.Icon>
-                    <fa:FontAwesome Icon="Minus"/>
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <MenuItem Header="Pack Options" InputGestureText="Ctrl+O" Command="{Binding ConfigurationViewModel.EditPackCommand}">
-                <MenuItem.Icon>
-                    <fa:FontAwesome Icon="List"/>
-                </MenuItem.Icon>
-            </MenuItem>
-        </MenuItem>
-
-        <MenuItem Header="_View">
-            <MenuItem Header="Play" InputGestureText="Ctrl+P" Command="{Binding PlayerViewModel.StartQuizCommand}">
-                <MenuItem.Icon>
-                    <fa:FontAwesome Icon="Play" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Edit" InputGestureText="Ctrl+E">
-                <MenuItem.Icon>
-                    <fa:FontAwesome Icon="Edit" />
-                </MenuItem.Icon>
-            </MenuItem>
-        </MenuItem>
+        </MenuItem>       
+       
     </Menu>
 </UserControl>

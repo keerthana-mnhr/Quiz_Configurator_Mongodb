@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStyle="None"
         AllowsTransparency="True"
-        Height="280" Width="220"
+        Height="350" Width="220"
         WindowStartupLocation="CenterOwner">
     <Border BorderBrush="Black" BorderThickness="2" Background="White">
         <Grid>
@@ -17,7 +17,6 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
 
-          
             <Grid Grid.Row="0" Background="LightBlue">
                 <TextBlock Text="New Question Pack" VerticalAlignment="Center" 
                           Margin="8,0" FontWeight="Bold"/>
@@ -30,13 +29,12 @@
             </Grid>
 
             <StackPanel Grid.Row="1" Margin="15,15,15,5">
-               
+
                 <TextBlock Text="Pack Name:" FontWeight="Bold" Margin="0,0,0,5"/>
                 <TextBox x:Name="PackNameTextBox" Height="25" 
                         BorderBrush="Black" BorderThickness="1"
                         Margin="0,0,0,15"/>
 
-              
                 <TextBlock Text="Difficulty:" FontWeight="Bold" Margin="0,0,0,5"/>
                 <ComboBox x:Name="DifficultyComboBox" Height="25" 
                          BorderBrush="Black" BorderThickness="1"
@@ -46,15 +44,28 @@
                     <ComboBoxItem Content="Difficult"/>
                 </ComboBox>
 
-                <TextBlock Text="Category:" FontWeight="Bold" Margin="0,0,0,5"/>
-                <ComboBox x:Name="CategoryComboBox"
-                           Height="25"
-                            BorderBrush="Black" BorderThickness="1"
-                            Margin="0,0,0,15"
-                        ItemsSource="{Binding Categories}"
-                            DisplayMemberPath="Name"
-                            SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
-                </ComboBox>
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="25"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Category:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="CategoryComboBox"
+                                  Height="25"
+                                  BorderBrush="Black" BorderThickness="1"
+                                  ItemsSource="{Binding Categories}"
+                                  DisplayMemberPath="Name"
+                                  SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" Content="+" Width="25" Height="25"
+                            Background="LightGreen" BorderBrush="Black" BorderThickness="1"
+                            FontWeight="Bold" FontSize="12"
+                            Click="AddCategory_Click"
+                            ToolTip="Add New Category" Margin="0,21,0,0"/>
+                </Grid>
 
                 <TextBlock Text="Time Limit:" FontWeight="Bold" Margin="0,0,0,5"/>
                 <TextBlock Text="{Binding ElementName=TimeLimitSlider, Path=Value, StringFormat='{}{0:F0} Seconds'}" 
@@ -64,7 +75,6 @@
                        Margin="0,0,0,10"/>
             </StackPanel>
 
-           
             <StackPanel Grid.Row="2" Orientation="Horizontal" 
                        HorizontalAlignment="Right" Margin="0,0,15,10">
                 <Button Content="Create" Width="60" Height="25" 

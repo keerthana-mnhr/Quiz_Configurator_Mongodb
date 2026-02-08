@@ -1,12 +1,7 @@
 ﻿using Quiz_Configurator.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quiz_Configurator.ViewModel
 {
@@ -18,7 +13,7 @@ namespace Quiz_Configurator.ViewModel
         {
             _model = model ?? throw new ArgumentNullException(nameof(model));
             Questions = new ObservableCollection<Question>(_model.Questions);
-
+            Categories = new ObservableCollection<Category>();
             Questions.CollectionChanged += OnQuestionsCollectionChanged;
 
             foreach (var question in Questions)
@@ -119,6 +114,15 @@ namespace Quiz_Configurator.ViewModel
         private void OnQuestionPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             RaisePropertyChanged(nameof(Questions));
+        }
+        // Add this method to help initialize SelectedCategory when loading existing packs
+        public void InitializeSelectedCategoryFromId()
+        {
+            if (!string.IsNullOrEmpty(_model.CategoryId))
+            {
+                _selectedCategory = Categories.FirstOrDefault(c => c.Id == _model.CategoryId);
+                RaisePropertyChanged(nameof(SelectedCategory));
+            }
         }
     }
 }
