@@ -11,7 +11,7 @@ namespace Quiz_Configurator.ViewModel
     {
         private QuestionPackViewModel? _activePack;
         private bool _isLoading;
-        private bool _isManualQuestionOperation; // Add this flag to control auto-save
+        private bool _isManualQuestionOperation; 
 
         public MainWindowViewModel()
         {
@@ -45,7 +45,6 @@ namespace Quiz_Configurator.ViewModel
             }
         }
 
-        // Add C# input dialog method instead of VB.NET InputBox
         private string? ShowInputDialog(string prompt, string title)
         {
             var inputWindow = new Window
@@ -133,14 +132,12 @@ namespace Quiz_Configurator.ViewModel
             set => SetProperty(ref _isLoading, value);
         }
 
-        // Add property to control manual question operations
         public bool IsManualQuestionOperation
         {
             get => _isManualQuestionOperation;
             set => _isManualQuestionOperation = value;
         }
 
-        // Add methods to control auto-save behavior
         public void DisableAutoSave()
         {
             _isManualQuestionOperation = true;
@@ -157,7 +154,6 @@ namespace Quiz_Configurator.ViewModel
         {
             RaisePropertyChanged(nameof(ActivePack));
 
-            // Only save when not loading and not during manual question operations
             if (!_isLoading && !_isManualQuestionOperation && _activePack != null)
             {
                 _ = SavePackToStorageAsync(_activePack);
@@ -170,7 +166,7 @@ namespace Quiz_Configurator.ViewModel
             {
                 IsLoading = true;
 
-                // Load categories first
+                
                 await LoadCategoriesAsync();
 
                 var savedPacks = await App.MongoDBDataService.LoadPacksAsync();
@@ -182,13 +178,11 @@ namespace Quiz_Configurator.ViewModel
                     {
                         var packViewModel = new QuestionPackViewModel(pack);
 
-                        // Assign categories to each pack
                         foreach (var category in Categories)
                         {
                             packViewModel.Categories.Add(category);
                         }
 
-                        // Initialize the selected category based on CategoryId
                         packViewModel.InitializeSelectedCategoryFromId();
 
                         Packs.Add(packViewModel);
@@ -263,25 +257,21 @@ namespace Quiz_Configurator.ViewModel
         {
             try
             {
-                // Ensure categories are assigned
                 foreach (var category in Categories)
                 {
                     packViewModel.Categories.Add(category);
                 }
 
-                // Save to database first
                 var pack = packViewModel.GetQuestionPack();
                 await App.MongoDBDataService.SavePackAsync(pack);
 
-                // Only add to UI collection after successful save
                 Packs.Add(packViewModel);
                 SetupAutoSaveForPack(packViewModel);
                 ActivePack = packViewModel;
             }
             catch (Exception)
             {
-                // Don't add to collection if save failed
-                throw; // Re-throw to let calling method handle the error
+                throw; 
             }
         }
 
@@ -374,12 +364,10 @@ namespace Quiz_Configurator.ViewModel
             await LoadPacksFromStorageAsync();
         }
 
-        // Updated SetupAutoSaveForPack method with manual operation control
         private void SetupAutoSaveForPack(QuestionPackViewModel packViewModel)
         {
             packViewModel.Questions.CollectionChanged += (s, e) =>
             {
-                // Only auto-save if not loading AND not during manual question operations
                 if (!_isLoading && !_isManualQuestionOperation)
                 {
                     _ = SavePackToStorageAsync(packViewModel);

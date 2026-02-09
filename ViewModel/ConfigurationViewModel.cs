@@ -156,7 +156,7 @@ namespace Quiz_Configurator.ViewModel
 
             try
             {
-                // Set flag to prevent auto-save
+                
                 if (mainWindowViewModel != null)
                     mainWindowViewModel.IsManualQuestionOperation = true;
 
@@ -168,11 +168,11 @@ namespace Quiz_Configurator.ViewModel
                     "Wrong Answer 3"
                 );
 
-                // Add to local collection
+                
                 mainWindowViewModel.ActivePack.Questions.Add(question);
                 SelectedQuestion = question;
 
-                // Don't save here - let the user edit first, then they'll click "Add Question" to save
+                
             }
             catch (Exception ex)
             {
@@ -181,7 +181,7 @@ namespace Quiz_Configurator.ViewModel
             }
             finally
             {
-                // Always reset the flag
+                
                 if (mainWindowViewModel != null)
                     mainWindowViewModel.IsManualQuestionOperation = false;
             }
@@ -191,7 +191,7 @@ namespace Quiz_Configurator.ViewModel
         {
             try
             {
-                // Ensure categories are loaded
+                
                 if (mainWindowViewModel?.Categories.Count == 0)
                 {
                     await mainWindowViewModel.LoadCategoriesAsync();
@@ -201,7 +201,7 @@ namespace Quiz_Configurator.ViewModel
                 var tempPack = new QuestionPack("", Difficulty.Medium, 30);
                 var dialogViewModel = new QuestionPackViewModel(tempPack);
 
-                // Assign categories to dialog viewmodel
+                
                 foreach (var category in mainWindowViewModel.Categories)
                 {
                     dialogViewModel.Categories.Add(category);
@@ -235,10 +235,10 @@ namespace Quiz_Configurator.ViewModel
                         return;
                     }
 
-                    // Get the selected category from the dialog
+                    
                     var selectedCategory = dialog.SelectedCategory;
 
-                    // Create new pack - let EF generate the ID
+                    
                     var newPack = new QuestionPack(packName, dialog.SelectedDifficulty, dialog.TimeLimitInSeconds)
                     {
                         CategoryId = selectedCategory?.Id ?? string.Empty
@@ -246,7 +246,7 @@ namespace Quiz_Configurator.ViewModel
 
                     var packViewModel = new QuestionPackViewModel(newPack);
 
-                    // Setup categories for the new pack
+                    
                     foreach (var category in mainWindowViewModel.Categories)
                     {
                         packViewModel.Categories.Add(category);
@@ -355,7 +355,7 @@ namespace Quiz_Configurator.ViewModel
 
             try
             {
-                // Set flag to prevent auto-save
+                
                 if (mainWindowViewModel != null)
                     mainWindowViewModel.IsManualQuestionOperation = true;
 
@@ -367,16 +367,16 @@ namespace Quiz_Configurator.ViewModel
                     ThirdIncorrectAnswer
                 );
 
-                // Get the pack ID
+                
                 var pack = mainWindowViewModel.ActivePack.GetQuestionPack();
 
-                // Use the specific method for adding questions
+                
                 await App.MongoDBDataService.AddQuestionToPackAsync(pack.Id, question);
 
-                // Add to local collection AFTER successful database save
+                
                 mainWindowViewModel.ActivePack.Questions.Add(question);
 
-                // Clear form
+                
                 NewQuestionText = string.Empty;
                 CorrectAnswer = string.Empty;
                 FirstIncorrectAnswer = string.Empty;
@@ -393,7 +393,7 @@ namespace Quiz_Configurator.ViewModel
             }
             finally
             {
-                // Always reset the flag
+                
                 if (mainWindowViewModel != null)
                     mainWindowViewModel.IsManualQuestionOperation = false;
             }
@@ -434,17 +434,17 @@ namespace Quiz_Configurator.ViewModel
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    // Set flag to prevent auto-save
+                    
                     if (mainWindowViewModel != null)
                         mainWindowViewModel.IsManualQuestionOperation = true;
 
-                    // Get the pack ID
+                    
                     var pack = mainWindowViewModel.ActivePack.GetQuestionPack();
 
-                    // Use the specific method for removing questions
+                    
                     await App.MongoDBDataService.RemoveQuestionFromPackAsync(pack.Id, questionToDelete);
 
-                    // Remove from local collection AFTER successful database delete
+                    
                     mainWindowViewModel.ActivePack.Questions.Remove(questionToDelete);
 
                     if (SelectedQuestion == questionToDelete)
@@ -463,7 +463,7 @@ namespace Quiz_Configurator.ViewModel
             }
             finally
             {
-                // Always reset the flag
+               
                 if (mainWindowViewModel != null)
                     mainWindowViewModel.IsManualQuestionOperation = false;
             }
@@ -510,14 +510,14 @@ namespace Quiz_Configurator.ViewModel
 
             try
             {
-                // Set flag to prevent auto-save
+                
                 if (mainWindowViewModel != null)
                     mainWindowViewModel.IsManualQuestionOperation = true;
 
-                // Get the pack ID
+                
                 var pack = mainWindowViewModel.ActivePack.GetQuestionPack();
 
-                // Store the old question for database update
+                
                 var oldQuestion = new Question(
                     SelectedQuestion.Query,
                     SelectedQuestion.CorrectAnswer,
@@ -526,7 +526,7 @@ namespace Quiz_Configurator.ViewModel
                     SelectedQuestion.IncorrectAnswers?[2] ?? ""
                 );
 
-                // Create new question with updated values
+                
                 var newQuestion = new Question(
                     NewQuestionText,
                     CorrectAnswer,
@@ -535,10 +535,9 @@ namespace Quiz_Configurator.ViewModel
                     ThirdIncorrectAnswer
                 );
 
-                // Use the specific method for updating questions
+                
                 await App.MongoDBDataService.UpdateQuestionInPackAsync(pack.Id, oldQuestion, newQuestion);
 
-                // Update the local question object AFTER successful database save
                 SelectedQuestion.Query = NewQuestionText;
                 SelectedQuestion.CorrectAnswer = CorrectAnswer;
                 SelectedQuestion.IncorrectAnswers = new[] { FirstIncorrectAnswer, SecondIncorrectAnswer, ThirdIncorrectAnswer };
@@ -557,7 +556,6 @@ namespace Quiz_Configurator.ViewModel
             }
             finally
             {
-                // Always reset the flag
                 if (mainWindowViewModel != null)
                     mainWindowViewModel.IsManualQuestionOperation = false;
             }

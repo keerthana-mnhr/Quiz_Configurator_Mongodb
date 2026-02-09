@@ -14,9 +14,7 @@ using System.Windows.Shapes;
 
 namespace Quiz_Configurator.Dialogs
 {
-    /// <summary>
-    /// Interaction logic for PackOptionDialog.xaml
-    /// </summary>
+    
     public partial class PackOptionDialog : Window
     {
         public PackOptionDialog()

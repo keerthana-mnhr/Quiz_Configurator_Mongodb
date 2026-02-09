@@ -115,7 +115,6 @@ namespace Quiz_Configurator.ViewModel
         {
             RaisePropertyChanged(nameof(Questions));
         }
-        // Add this method to help initialize SelectedCategory when loading existing packs
         public void InitializeSelectedCategoryFromId()
         {
             if (!string.IsNullOrEmpty(_model.CategoryId))
